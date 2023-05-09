@@ -1,5 +1,5 @@
 ---
-title: "MIP"
+title: "Matriz Insumo Producto Regional de Entre Rios"
 output: 
   flexdashboard::flex_dashboard:
     orientation: columns
