@@ -1,9 +1,9 @@
 ---
-title: "Matriz Insumo Producto Regional de Entre Rios"
+title: "Matriz Insumo Producto"
 output: 
   flexdashboard::flex_dashboard:
-    orientation: columns
-    vertical_layout: fill
+    #orientation: columns
+    vertical_layout: scroll
 ---
 
 ```{r setup, include=FALSE}
@@ -11,6 +11,7 @@ library(flexdashboard)
 library(plotly)
 library(readxl)
 library(googlesheets4)
+library(tidyverse)
 
 ##### Carga de datos ####
 
@@ -148,29 +149,68 @@ data$empleo_er <- (data$empleo_er)/mean(data$empleo_er)
 
 ```
 
-Column {data-width=650}
+Column {data-width=500}
 -----------------------------------------------------------------------
 
-### Chart A
+### Clasificación Rasmussen
 
 ```{r}
+
+hline <- function(y = 0, color = "black") {
+  list(
+    type = "line",
+    x0 = 0,
+    x1 = 1,
+    xref = "paper",
+    y0 = y,
+    y1 = y,
+    line = list(color = color)
+  )
+}
+
+vline <- function(x = 0, color = "black") {
+  list(
+    type = "line",
+    y0 = 0,
+    y1 = 1,
+    yref = "paper",
+    x0 = x,
+    x1 = x,
+    line = list(color = color)
+  )
+}
+
+
 plot_ly(data=data,
         x=~bl_n,
         y=~fl_n,
         color=~rama_1,
         text=~rownames(data),
         size=~empleo_er,
-        sizes=c(100,10000))
+        sizes=c(100,10000),
+        mode = 'markers')%>%
+  layout(xaxis = list(title="Black linkage"),
+         yaxis = list(title = "Foward linkage"),
+         shapes = list(hline(1), vline(1)))
 
 ```
 
-Column {data-width=350}
+Column {data-width=500}
 -----------------------------------------------------------------------
 
-### Chart B
+### Multiplicadores
 
 ```{r}
-
+plot_ly(data=data,
+        x=~mult_er,
+        y=~rownames(data),
+        color=~rama_1,
+        type = 'bar',
+        orientation = 'h',
+        text=~rownames(data))%>%
+  layout(xaxis = list(title="Multiplicador", categoryorder = "array",
+         categoryarray = ~mult_er),
+         yaxis = list(title = "Rama"))
 ```
 
 ### Chart C
